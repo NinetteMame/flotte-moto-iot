@@ -557,7 +557,6 @@ class ResponsableProfileTests(MotoTrackBaseTest):
         self.assertContains(response, "Voir détails")
 
 
-@override_settings(RESPONSABLE_REGISTRATION_CODE="CODE-BAOL")
 class AccountManagementTests(MotoTrackBaseTest):
     def test_creation_compte_responsable_depuis_authentification(self):
         response = self.client.post(
@@ -570,7 +569,6 @@ class AccountManagementTests(MotoTrackBaseTest):
                 "telephone": "770000001",
                 "password1": "MotDePasseSolide2026!",
                 "password2": "MotDePasseSolide2026!",
-                "code_inscription": "CODE-BAOL",
             },
         )
         self.assertRedirects(response, reverse("login"))

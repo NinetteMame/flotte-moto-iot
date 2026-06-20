@@ -31,11 +31,11 @@
             {% csrf_token %}
             <p class="eyebrow">Nouveau responsable</p>
             <h2>Créer un compte</h2>
-            <p class="muted">Renseignez vos informations et le code interne BAOL EXPRESS.</p>
+            <p class="muted">Créez le premier compte responsable de BAOL EXPRESS.</p>
             {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
             <div class="register-grid">
                 {% for field in form %}
-                    <div class="field {% if field.name == 'password1' or field.name == 'password2' or field.name == 'code_inscription' %}field-wide{% endif %}">
+                    <div class="field {% if field.name == 'password1' or field.name == 'password2' %}field-wide{% endif %}">
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                         {{ field }}
                         {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}

@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm, UserCreationForm
 from django.db import transaction
 
@@ -250,10 +249,6 @@ class ResponsablePasswordChangeForm(StyledFormMixin, PasswordChangeForm):
 class ResponsableRegistrationForm(StyledFormMixin, UserCreationForm):
     email = forms.EmailField(label="Adresse e-mail")
     telephone = forms.CharField(max_length=30, label="Numéro de téléphone")
-    code_inscription = forms.CharField(
-        label="Code d'inscription BAOL EXPRESS",
-        widget=forms.PasswordInput(attrs={"autocomplete": "off"}),
-    )
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -271,12 +266,6 @@ class ResponsableRegistrationForm(StyledFormMixin, UserCreationForm):
             "first_name": "Prénom",
             "last_name": "Nom",
         }
-
-    def clean_code_inscription(self):
-        code = self.cleaned_data["code_inscription"]
-        if code != settings.RESPONSABLE_REGISTRATION_CODE:
-            raise forms.ValidationError("Le code d'inscription est incorrect.")
-        return code
 
     def save(self, commit=True):
         user = super().save(commit=False)
