@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Affectations{% endblock %}
+{% block content %}
+<div class="page-actions"><div><h2>Motos et livreurs</h2><p>Une seule affectation active est autorisée par moto et par livreur.</p></div><a class="btn btn-primary" href="{% url 'affectation-create' %}">+ Nouvelle affectation</a></div>
+<div class="panel"><div class="table-wrap"><table>
+<thead><tr><th>Moto</th><th>Livreur</th><th>Début</th><th>Fin</th><th>Statut</th><th>Actions</th></tr></thead>
+<tbody>{% for item in affectations %}<tr><td><strong>{{ item.moto.immatriculation }}</strong></td><td>{{ item.livreur }}</td><td>{{ item.date_debut|date:"d/m/Y H:i" }}</td><td>{{ item.date_fin|date:"d/m/Y H:i"|default:"—" }}</td><td><span class="badge {% if item.active %}status-en_cours{% else %}status-annulee{% endif %}">{% if item.active %}Active{% else %}Inactive{% endif %}</span></td><td class="actions"><a href="{% url 'affectation-update' item.pk %}">Modifier</a><a class="danger-link" href="{% url 'affectation-delete' item.pk %}">Supprimer</a></td></tr>{% empty %}<tr><td colspan="6" class="empty">Aucune affectation.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Mes missions{% endblock %}
+{% block content %}
+<div class="page-actions"><div><h2>Bonjour {{ user.first_name|default:user.username }}</h2><p>Voici toutes les livraisons qui vous sont affectées.</p></div></div>
+<div class="panel table-wrap driver-missions-table"><table><thead><tr><th>Référence</th><th>Client</th><th>Téléphone</th><th>Adresse</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead><tbody>
+{% for mission in missions %}<tr><td><strong>#{{ mission.pk }}</strong></td><td>{{ mission.nom_client }}</td><td><a href="tel:{{ mission.telephone_client }}">{{ mission.telephone_client }}</a></td><td>{{ mission.adresse_livraison }}</td><td>{{ mission.cree_le|date:"d/m/Y" }}</td><td><span class="badge status-{{ mission.statut|lower }}">{{ mission.get_statut_display }}</span></td><td><a class="btn btn-small btn-detail" href="{% url 'mission-detail' mission.pk %}"><i class="fa-solid fa-eye"></i> Voir détails</a></td></tr>
+{% empty %}<tr><td colspan="7" class="empty">Aucune mission ne vous est affectée.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

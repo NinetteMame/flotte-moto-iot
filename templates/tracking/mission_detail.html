@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load l10n %}
+{% block page_title %}Mission #{{ mission.pk }}{% endblock %}
+{% block head %}
+{% if not google_maps_enabled %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="detail-layout">
+    <article class="panel">
+        <div class="panel-header"><div><span class="badge status-{{ mission.statut|lower }}">{{ mission.get_statut_display }}</span><h2>{{ mission.nom_client }}</h2><p>Mission créée le {{ mission.cree_le|date:"d/m/Y à H:i" }}</p></div>{% if user.is_responsable %}<a class="btn btn-secondary" href="{% url 'mission-update' mission.pk %}">Modifier</a>{% endif %}</div>
+        <div class="detail-grid">
+            <div><small>Client</small><strong>{{ mission.nom_client }}</strong></div>
+            <div><small>Téléphone</small><strong><a href="tel:{{ mission.telephone_client }}">{{ mission.telephone_client }}</a></strong></div>
+            <div class="detail-wide"><small>Adresse de livraison</small><strong>{{ mission.adresse_livraison }}</strong></div>
+            <div class="detail-wide"><small>Description du lieu</small><p>{{ mission.description_lieu|default:"Aucune précision." }}</p></div>
+            <div><small>Livreur</small><strong>{{ mission.livreur }}</strong></div>
+            <div><small>Moto</small><strong>{{ mission.moto.immatriculation }}</strong></div>
+        </div>
+    </article>
+    <aside class="panel otp-card">
+        <span class="otp-icon">✓</span>
+        <h3>Validation de livraison</h3>
+        {% if mission.statut == "TERMINEE" %}
+            <p>Livraison validée le <strong>{{ mission.otp_valide_le|date:"d/m/Y à H:i" }}</strong>.</p>
+            {% if user.is_responsable %}<p>Code OTP utilisé :</p><div class="otp-code otp-code-validated">{{ mission.otp }}</div>{% endif %}
+            {% if not user.is_responsable and mission.preuve %}<a class="btn btn-primary btn-block" href="{% url 'livreur-preuve' mission.preuve.pk %}">Voir la preuve de livraison</a>{% endif %}
+        {% else %}
+            {% if user.is_responsable %}<p>Code OTP à communiquer au client :</p><div class="otp-code">{{ mission.otp }}</div>{% else %}<p>Demandez le code OTP au client pour confirmer la remise du colis.</p>{% endif %}
+            <a class="btn btn-primary btn-block" href="{% url 'mission-otp' mission.pk %}">Valider avec l’OTP</a>
+        {% endif %}
+        <a class="btn btn-call btn-block" href="tel:{{ mission.telephone_client }}">Appeler le client</a>
+        {% if mission.destination_latitude %}<a id="missionExternalRouteButton" class="btn btn-maps btn-block" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination={{ mission.destination_latitude|unlocalize }},{{ mission.destination_longitude|unlocalize }}"><i class="fa-solid fa-diamond-turn-right"></i> Ouvrir dans Google Maps</a>{% endif %}
+    </aside>
+</div>
+<section class="panel mission-map-panel">
+    <div class="panel-header">
+        <div><h3>Itinéraire de livraison</h3><p>Destination du client et position actuelle de la moto.</p></div>
+        {% if mission.destination_latitude %}<span class="badge status-en_cours">Actualisation 10 s</span>{% endif %}
+    </div>
+    <div class="mission-map-shell">
+        <div class="mission-map-legend">
+            <strong>Légende du trajet</strong>
+            <span><i class="legend-dot legend-moto"></i> Position moto</span>
+            <span><i class="legend-dot legend-destination"></i> Destination client</span>
+        </div>
+        <div
+            id="missionMap"
+            data-mission-id="{{ mission.pk }}"
+            data-destination-lat="{% if mission.destination_latitude != None %}{{ mission.destination_latitude|unlocalize }}{% endif %}"
+            data-destination-lng="{% if mission.destination_longitude != None %}{{ mission.destination_longitude|unlocalize }}{% endif %}"
+            data-client="{{ mission.nom_client }}"
+            data-address="{{ mission.adresse_livraison }}"
+            data-moto="{{ mission.moto.immatriculation }}"
+        ></div>
+    </div>
+    {% if not mission.destination_latitude %}
+        <div class="mission-map-empty">Ajoutez les coordonnées de destination en modifiant cette mission.</div>
+    {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+{% if google_maps_enabled %}
+<script src="{% static 'js/mission-google-map.js' %}"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key|urlencode }}&callback=initMotoTrackMissionMap&loading=async&v=weekly"></script>
+{% else %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/mission-map.js' %}"></script>
+{% endif %}
+{% endblock %}

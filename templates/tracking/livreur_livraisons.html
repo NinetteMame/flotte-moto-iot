@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block page_title %}Mes Livraisons{% endblock %}
+{% block content %}
+<section class="history-hero">
+  <div><span class="history-hero-icon"><i class="fa-solid fa-clock-rotate-left"></i></span><p class="eyebrow">BAOL EXPRESS</p><h2>Historique des livraisons terminées</h2><p>Retrouvez toutes vos missions livrées et leurs preuves officielles.</p></div>
+  <div class="history-total"><small>Livraisons affichées</small><strong>{{ missions|length }}</strong><span><i class="fa-solid fa-circle-check"></i> Terminées avec succès</span></div>
+</section>
+<form method="get" class="history-filters panel">
+  <div class="field"><label>Rechercher un client</label><input class="form-control" type="search" name="q" value="{{ recherche }}" placeholder="Nom du client"></div>
+  <div class="filter-pills"><a class="{% if not periode %}active{% endif %}" href="?q={{ recherche }}">Toutes</a><a class="{% if periode == 'today' %}active{% endif %}" href="?periode=today&q={{ recherche }}">Aujourd’hui</a><a class="{% if periode == 'week' %}active{% endif %}" href="?periode=week&q={{ recherche }}">Cette semaine</a><a class="{% if periode == 'month' %}active{% endif %}" href="?periode=month&q={{ recherche }}">Ce mois</a></div>
+  <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Rechercher</button>
+</form>
+<div class="panel history-table-panel"><div class="history-table-title"><span><i class="fa-solid fa-check-double"></i></span><div><h3>Livraisons terminées</h3><p>Historique validé par code OTP</p></div></div><div class="table-wrap"><table><thead><tr><th>Mission</th><th>Date</th><th>Client</th><th>Adresse</th><th>Preuve</th></tr></thead><tbody>{% for mission in missions %}<tr><td><span class="history-reference">#{{ mission.pk }}</span></td><td>{{ mission.otp_valide_le|date:"d/m/Y H:i" }}</td><td><strong>{{ mission.nom_client }}</strong></td><td>{{ mission.adresse_livraison }}</td><td>{% if mission.preuve %}<a class="btn btn-small btn-secondary" href="{% url 'livreur-preuve' mission.preuve.pk %}"><i class="fa-solid fa-file-shield"></i> Voir la preuve</a>{% endif %}</td></tr>{% empty %}<tr><td colspan="5" class="empty">Aucune livraison terminée trouvée.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

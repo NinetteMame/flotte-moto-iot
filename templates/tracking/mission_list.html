@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Missions{% endblock %}
+{% block content %}
+<div class="page-actions"><div><h2>Suivi des missions</h2><p>Créez et supervisez les livraisons.</p></div><a class="btn btn-primary" href="{% url 'mission-create' %}">+ Créer une mission</a></div>
+<div class="panel"><div class="table-wrap"><table>
+<thead><tr><th>Mission</th><th>Client</th><th>Livreur</th><th>Moto</th><th>Statut</th><th>Créée le</th><th>Actions</th></tr></thead>
+<tbody>{% for mission in missions %}<tr><td><a href="{% url 'mission-detail' mission.pk %}"><strong>#{{ mission.pk }}</strong></a></td><td>{{ mission.nom_client }}<small>{{ mission.telephone_client }}</small></td><td>{{ mission.livreur }}</td><td>{{ mission.moto.immatriculation }}</td><td><span class="badge status-{{ mission.statut|lower }}">{{ mission.get_statut_display }}</span></td><td>{{ mission.cree_le|date:"d/m/Y H:i" }}</td><td class="actions mission-actions"><a class="detail-link" href="{% url 'mission-detail' mission.pk %}"><i class="fa-solid fa-eye"></i> Voir détails</a><a href="{% url 'mission-update' mission.pk %}"><i class="fa-solid fa-pen"></i> Modifier</a><a class="danger-link" href="{% url 'mission-delete' mission.pk %}"><i class="fa-solid fa-trash"></i> Supprimer</a></td></tr>{% empty %}<tr><td colspan="7" class="empty">Aucune mission.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

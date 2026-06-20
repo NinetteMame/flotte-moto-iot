@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: mototrack
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: gunicorn mototrack.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    healthCheckPath: /connexion/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GPS_API_KEY
+        generateValue: true
+      - key: RESPONSABLE_REGISTRATION_CODE
+        generateValue: true
+      - key: GPS_ALERT_DELAY_MINUTES
+        value: "10"
+      - key: TIME_ZONE
+        value: Africa/Sao_Tome
+      - key: MAP_PROVIDER
+        value: esri
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_SSL_REQUIRE
+        value: "True"
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false

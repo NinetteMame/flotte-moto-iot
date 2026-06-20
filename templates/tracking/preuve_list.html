@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Preuves de livraison{% endblock %}
+{% block content %}
+<div class="page-actions"><div><h2>Livraisons confirmées</h2><p>Historique des validations effectuées par OTP.</p></div></div>
+<div class="panel"><div class="table-wrap"><table>
+<thead><tr><th>Mission</th><th>Client</th><th>Livreur</th><th>Moto</th><th>Date</th><th>Heure</th><th>OTP validé</th></tr></thead>
+<tbody>{% for preuve in preuves %}<tr><td><a href="{% url 'mission-detail' preuve.mission_id %}"><strong>#{{ preuve.mission_id }}</strong></a></td><td>{{ preuve.client }}</td><td>{{ preuve.livreur }}</td><td>{{ preuve.moto.immatriculation }}</td><td>{{ preuve.valide_le|date:"d/m/Y" }}</td><td>{{ preuve.valide_le|time:"H:i:s" }}</td><td><span class="otp-mini">{{ preuve.otp_valide }}</span></td></tr>{% empty %}<tr><td colspan="7" class="empty">Aucune preuve enregistrée.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

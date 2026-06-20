@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Alertes | MotoTrack{% endblock %}
+{% block page_title %}Centre d’alertes{% endblock %}
+{% block content %}
+<div class="page-actions">
+    <div>
+        <h2>Alertes BAOL EXPRESS</h2>
+        <p>Surveillez les événements GPS et les validations de livraison.</p>
+    </div>
+    <div class="alert-summary">
+        <span class="alert-summary-dot"></span>
+        {{ nav_alertes_non_lues }} alerte{{ nav_alertes_non_lues|pluralize }} non lue{{ nav_alertes_non_lues|pluralize }}
+    </div>
+</div>
+<div class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Moto</th><th>Mission</th><th>Type</th><th>Message</th><th>Statut</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+            {% for alerte in alertes %}
+                <tr class="{% if not alerte.is_read %}alert-row-unread{% endif %}">
+                    <td>{{ alerte.date|date:"d/m/Y H:i" }}</td>
+                    <td>{{ alerte.moto.immatriculation|default:"—" }}</td>
+                    <td>{% if alerte.mission %}<a href="{% url 'mission-detail' alerte.mission_id %}">#{{ alerte.mission_id }}</a>{% else %}—{% endif %}</td>
+                    <td><span class="alert-type-badge type-{{ alerte.type|lower }}">{{ alerte.get_type_display }}</span></td>
+                    <td class="alert-message-cell">{{ alerte.message }}</td>
+                    <td><span class="badge {% if alerte.is_read %}status-read{% else %}status-unread{% endif %}">{% if alerte.is_read %}Lue{% else %}Non lue{% endif %}</span></td>
+                    <td>
+                        {% if not alerte.is_read %}
+                        <form method="post" action="{% url 'alert-mark-read' alerte.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-small btn-secondary" type="submit">Marquer comme lue</button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{% url 'alert-delete' alerte.pk %}" onsubmit="return confirm('Supprimer cette alerte déjà lue ?');">
+                            {% csrf_token %}
+                            <button class="btn btn-small btn-danger" type="submit"><i class="fa-solid fa-trash"></i> Supprimer</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" class="empty">Aucune alerte pour le moment.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

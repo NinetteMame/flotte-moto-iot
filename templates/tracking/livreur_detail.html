@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block page_title %}Fiche du livreur{% endblock %}
+{% block content %}
+<section class="livreur-detail-hero">
+  <div class="livreur-detail-profile">
+    {% if livreur.photo %}<img src="{{ livreur.photo.url }}" alt="Photo de {{ livreur }}">{% else %}<span class="livreur-detail-avatar">{{ livreur.prenom|first }}{{ livreur.nom|first }}</span>{% endif %}
+    <div><span class="profile-role"><i class="fa-solid fa-id-badge"></i> Profil livreur BAOL EXPRESS</span><h2>{{ livreur }}</h2><p>{{ livreur.telephone }} · {{ livreur.utilisateur.email|default:"E-mail non renseigné" }}</p></div>
+  </div>
+  <div class="livreur-detail-actions"><span class="badge {% if livreur.actif %}status-terminee{% else %}status-annulee{% endif %}">{% if livreur.actif %}Compte actif{% else %}Compte inactif{% endif %}</span><a class="btn btn-light" href="{% url 'livreur-update' livreur.pk %}"><i class="fa-solid fa-pen"></i> Modifier</a></div>
+</section>
+
+<section class="livreur-detail-stats">
+  <article><span><i class="fa-solid fa-box"></i></span><div><small>Total missions</small><strong>{{ missions_total }}</strong></div></article>
+  <article><span><i class="fa-solid fa-circle-check"></i></span><div><small>Livraisons terminées</small><strong>{{ missions_terminees }}</strong></div></article>
+  <article><span><i class="fa-solid fa-motorcycle"></i></span><div><small>Moto active</small><strong>{% if affectation %}{{ affectation.moto.immatriculation }}{% else %}Aucune{% endif %}</strong></div></article>
+  <article><span><i class="fa-solid fa-file-signature"></i></span><div><small>Type de contrat</small><strong>{{ livreur.get_type_contrat_display }}</strong></div></article>
+</section>
+
+<div class="livreur-detail-grid">
+  <article class="panel detail-section">
+    <div class="panel-header"><div><h3>Informations personnelles</h3><p>Identité et coordonnées enregistrées.</p></div><i class="fa-solid fa-user-shield section-symbol"></i></div>
+    <div class="profile-information-grid">
+      <div><span class="profile-info-icon"><i class="fa-solid fa-user"></i></span><small>Nom complet</small><strong>{{ livreur.prenom }} {{ livreur.nom }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-cake-candles"></i></span><small>Âge</small><strong>{{ livreur.age|default:"Non renseigné" }}{% if livreur.age %} ans{% endif %}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-phone"></i></span><small>Téléphone</small><strong>{{ livreur.telephone }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-location-dot"></i></span><small>Adresse</small><strong>{{ livreur.adresse }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-envelope"></i></span><small>E-mail</small><strong>{{ livreur.utilisateur.email|default:"Non renseigné" }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-id-card"></i></span><small>Numéro CNI</small><strong>{{ livreur.numero_cni }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-address-card"></i></span><small>Numéro de permis</small><strong>{{ livreur.numero_permis }}</strong></div>
+      <div><span class="profile-info-icon"><i class="fa-solid fa-user-lock"></i></span><small>Nom d'utilisateur</small><strong>{{ livreur.utilisateur.username }}</strong></div>
+      <div class="password-security-card"><span class="profile-info-icon"><i class="fa-solid fa-key"></i></span><small>Mot de passe</small><strong>Protégé et non affichable</strong><a class="btn btn-secondary btn-small" href="{% url 'livreur-password-reset' livreur.pk %}">Définir un nouveau mot de passe</a></div>
+    </div>
+  </article>
+  <aside class="panel contract-card">
+    <div class="contract-card-top"><span><i class="fa-solid fa-file-contract"></i></span><div><small>Contrat professionnel</small><h3>{{ livreur.get_type_contrat_display }}</h3></div></div>
+    <div class="contract-timeline">
+      <div><small>Date de début</small><strong>{{ livreur.date_debut_contrat|date:"d/m/Y"|default:"Non renseignée" }}</strong></div>
+      <div><small>Date de fin</small><strong>{% if livreur.type_contrat == "CDD" %}{{ livreur.date_fin_contrat|date:"d/m/Y" }}{% else %}Durée indéterminée{% endif %}</strong></div>
+    </div>
+    {% if livreur.document_contrat %}<a class="btn btn-primary btn-block" href="{% url 'livreur-contract-download' livreur.pk %}"><i class="fa-solid fa-download"></i> Télécharger le contrat</a>{% else %}<p class="contract-empty"><i class="fa-solid fa-circle-info"></i> Aucun document de contrat téléversé.</p>{% endif %}
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte responsable | MotoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="login-body">
+<main class="login-layout">
+    <section class="login-visual">
+        <div class="visual-grid"></div>
+        <div class="login-brand"><span class="brand-mark">M</span> MotoTrack</div>
+        <div class="visual-copy">
+            <span class="pill">BAOL EXPRESS</span>
+            <h1>Créez votre espace responsable.</h1>
+            <p>Le code d'inscription interne protège l'accès aux fonctions de gestion de MotoTrack.</p>
+        </div>
+        <div class="route-graphic">
+            <span class="route-point point-a"></span>
+            <span class="route-line"></span>
+            <span class="route-point point-b"></span>
+        </div>
+    </section>
+    <section class="login-panel register-panel">
+        <form method="post" class="login-card register-card">
+            {% csrf_token %}
+            <p class="eyebrow">Nouveau responsable</p>
+            <h2>Créer un compte</h2>
+            <p class="muted">Renseignez vos informations et le code interne BAOL EXPRESS.</p>
+            {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="register-grid">
+                {% for field in form %}
+                    <div class="field {% if field.name == 'password1' or field.name == 'password2' or field.name == 'code_inscription' %}field-wide{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Créer le compte responsable</button>
+            <a class="btn btn-secondary btn-block login-register-link" href="{% url 'login' %}">Retour à la connexion</a>
+        </form>
+    </section>
+</main>
+</body>
+</html>

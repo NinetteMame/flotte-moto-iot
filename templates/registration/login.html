@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | MotoTrack</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="login-body">
+<main class="login-layout">
+    <section class="login-visual">
+        <div class="visual-grid"></div>
+        <div class="login-brand"><span class="brand-mark">M</span> MotoTrack</div>
+        <div class="visual-copy">
+            <span class="pill">IoT • GPS • Livraison</span>
+            <h1>Gardez chaque livraison sous contrôle.</h1>
+            <p>Une plateforme claire pour piloter les motos, suivre les missions et confirmer les livraisons en temps réel.</p>
+        </div>
+        <div class="route-graphic">
+            <span class="route-point point-a"></span>
+            <span class="route-line"></span>
+            <span class="route-point point-b"></span>
+        </div>
+    </section>
+    <section class="login-panel">
+        <form method="post" class="login-card">
+            {% csrf_token %}
+            <p class="eyebrow">Bienvenue</p>
+            <h2>Connexion à MotoTrack</h2>
+            <p class="muted">Entrez vos identifiants pour accéder à votre espace.</p>
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="field">
+                <label for="{{ form.username.id_for_label }}">Nom d’utilisateur</label>
+                <input type="text" name="username" id="{{ form.username.id_for_label }}" required autofocus placeholder="Ex. responsable">
+            </div>
+            <div class="field">
+                <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+                <input type="password" name="password" id="{{ form.password.id_for_label }}" required placeholder="Votre mot de passe">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+            <a class="btn btn-secondary btn-block login-register-link" href="{% url 'responsable-register' %}">Créer un compte responsable</a>
+            <p class="login-note">Accès sécurisé réservé aux utilisateurs autorisés.</p>
+        </form>
+    </section>
+</main>
+</body>
+</html>

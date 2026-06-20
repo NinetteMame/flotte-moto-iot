@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block page_title %}Confirmer la suppression{% endblock %}
+{% block content %}
+<div class="panel danger-panel">
+    <span class="danger-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+    <h2>Supprimer {% if type_objet %}{{ type_objet }}{% else %}cet élément{% endif %} ?</h2>
+    <p><strong>{{ objet }}</strong> sera supprimé définitivement.</p>
+    {% if dependances %}
+    <div class="delete-impact">
+        <strong>Données également supprimées</strong>
+        <div class="delete-impact-grid">
+            {% for libelle, nombre in dependances %}
+            <span><b>{{ nombre }}</b> {{ libelle }}</span>
+            {% endfor %}
+        </div>
+        <small>Cette opération est définitive et conserve la cohérence de MotoTrack.</small>
+    </div>
+    {% endif %}
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit"><i class="fa-solid fa-trash"></i> Confirmer la suppression</button>
+        <button class="btn btn-secondary" type="button" onclick="history.back()">Annuler</button>
+    </form>
+</div>
+{% endblock %}

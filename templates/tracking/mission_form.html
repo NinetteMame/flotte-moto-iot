@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}{{ titre }}{% endblock %}
+{% block head %}
+{% if not google_maps_enabled %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endif %}
+{% endblock %}
+{% block content %}
+<div class="mission-form-layout">
+    <div class="panel form-panel mission-form-panel">
+        <div class="panel-header"><div><h3>{{ titre }}</h3><p>Complétez les informations et choisissez la destination.</p></div></div>
+        <form method="post" class="model-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="form-grid">
+                {% for field in form %}
+                    <div class="field {% if field.name == 'adresse_livraison' or field.name == 'description_lieu' %}field-wide{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<small class="help-text">{{ field.help_text|safe }}</small>{% endif %}
+                        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+                <button class="btn btn-secondary" type="button" onclick="history.back()">Annuler</button>
+            </div>
+        </form>
+    </div>
+    <aside class="panel destination-picker-panel">
+        <div class="destination-picker-head">
+            <span class="destination-pin">⌖</span>
+            <div><h3>Choisir la destination</h3><p>Cliquez sur la carte du Sénégal pour remplir les coordonnées.</p></div>
+        </div>
+        <div id="destinationPicker"></div>
+        <p class="destination-picker-note" id="destinationPickerNote">Aucune destination sélectionnée.</p>
+    </aside>
+</div>
+{% endblock %}
+{% block scripts %}
+{% if google_maps_enabled %}
+<script src="{% static 'js/destination-google-picker.js' %}"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key|urlencode }}&callback=initMotoTrackDestinationPicker&loading=async&v=weekly"></script>
+{% else %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/destination-picker.js' %}"></script>
+{% endif %}
+{% endblock %}

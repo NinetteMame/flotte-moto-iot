@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block page_title %}Mon profil{% endblock %}
+{% block content %}
+<section class="driver-profile-view panel">
+  <div class="driver-profile-cover">
+    <div class="driver-profile-head">
+      {% if livreur.photo %}<img src="{{ livreur.photo.url }}" alt="{{ livreur }}">{% else %}<span class="driver-avatar">{{ livreur.prenom|first }}{{ livreur.nom|first }}</span>{% endif %}
+      <div><span class="profile-role"><i class="fa-solid fa-shield-halved"></i> Profil professionnel vérifié</span><h2>{{ livreur }}</h2><p>Livreur BAOL EXPRESS</p></div>
+    </div>
+    <div class="profile-readonly-note"><i class="fa-solid fa-lock"></i><span><strong>Profil sécurisé</strong><small>Ces informations sont gérées uniquement par le responsable.</small></span></div>
+  </div>
+  <div class="profile-information-grid">
+    <div><span class="profile-info-icon"><i class="fa-solid fa-user"></i></span><small>Prénom et nom</small><strong>{{ livreur.prenom }} {{ livreur.nom }}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-cake-candles"></i></span><small>Âge</small><strong>{{ livreur.age|default:"Non renseigné" }}{% if livreur.age %} ans{% endif %}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-phone"></i></span><small>Téléphone</small><strong>{{ livreur.telephone }}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-envelope"></i></span><small>Adresse e-mail</small><strong>{{ user.email|default:"Non renseignée" }}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-location-dot"></i></span><small>Adresse</small><strong>{{ livreur.adresse }}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-id-card"></i></span><small>Numéro CNI</small><strong>{{ livreur.numero_cni }}</strong></div>
+    <div><span class="profile-info-icon"><i class="fa-solid fa-address-card"></i></span><small>Numéro de permis</small><strong>{{ livreur.numero_permis }}</strong></div>
+  </div>
+</section>
+{% endblock %}

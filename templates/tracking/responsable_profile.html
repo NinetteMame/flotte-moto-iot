@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Mon profil | MotoTrack{% endblock %}
+{% block page_title %}Mon profil responsable{% endblock %}
+{% block content %}
+<div class="profile-grid">
+    <article class="panel">
+        <div class="panel-header">
+            <div>
+                <h3>Informations personnelles</h3>
+                <p>Modifiez votre nom, votre e-mail et votre téléphone.</p>
+            </div>
+        </div>
+        <form method="post" class="model-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="profile">
+            {% if profile_form.non_field_errors %}<div class="form-errors">{{ profile_form.non_field_errors }}</div>{% endif %}
+            <div class="form-grid">
+                {% for field in profile_form %}
+                    <div class="field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Enregistrer le profil</button>
+            </div>
+        </form>
+    </article>
+
+    <article class="panel">
+        <div class="panel-header">
+            <div>
+                <h3>Changer le mot de passe</h3>
+                <p>Utilisez un mot de passe robuste et personnel.</p>
+            </div>
+        </div>
+        <form method="post" class="model-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="password">
+            {% if password_form.non_field_errors %}<div class="form-errors">{{ password_form.non_field_errors }}</div>{% endif %}
+            <div class="profile-password-fields">
+                {% for field in password_form %}
+                    <div class="field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<small class="help-text">{{ field.help_text|safe }}</small>{% endif %}
+                        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Modifier le mot de passe</button>
+            </div>
+        </form>
+    </article>
+</div>
+{% endblock %}

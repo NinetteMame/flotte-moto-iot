@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Carte GPS | MotoTrack{% endblock %}
+{% block page_title %}Suivi GPS en direct{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+{% block content %}
+<div class="map-toolbar map-toolbar-premium">
+    <div><span class="map-eyebrow"><i class="fa-solid fa-satellite-dish"></i> Centre de suivi</span><h2>Position des motos au Sénégal</h2><p>Visualisation détaillée et actualisation automatique toutes les 10 secondes.</p></div>
+    <div class="map-status"><span></span><strong id="mapCount">0 moto localisée</strong><small>Plan détaillé Esri</small></div>
+</div>
+<div class="map-layout">
+    <div class="map-canvas-shell">
+        <div class="map-provider-badge"><i class="fa-solid fa-layer-group"></i> Plan + Satellite</div>
+        <div id="gpsMap" data-url="{% url 'gps-latest' %}"></div>
+    </div>
+    <aside class="panel map-list-panel map-side-panel">
+        <section class="map-side-section">
+            <div class="map-side-title">
+                <span><i class="fa-solid fa-location-dot"></i></span>
+                <div><h3>Dernières positions</h3><p>Positions reçues en temps réel.</p></div>
+            </div>
+            <div id="mapPositionList"><p class="empty">Chargement des positions…</p></div>
+        </section>
+        <section class="map-side-section map-history-section">
+            <div class="map-side-title">
+                <span><i class="fa-solid fa-route"></i></span>
+                <div><h3>Historique des motos</h3><p id="mapHistoryTitle">Toutes les motos suivies et enregistrées.</p></div>
+            </div>
+            <div class="tracked-moto-list" id="trackedMotoList">
+                <strong class="tracked-group-title">Motos suivies</strong>
+                {% for moto in motos_suivies %}
+                    <button class="tracked-moto-item" type="button" data-moto-id="{{ moto.pk }}" data-moto-immat="{{ moto.immatriculation }}">
+                        <span><i class="fa-solid fa-motorcycle"></i></span>
+                        <b>{{ moto.immatriculation }}</b>
+                        <small>Historique GPS disponible</small>
+                    </button>
+                {% empty %}
+                    <p class="empty compact-empty">Aucune moto suivie pour le moment.</p>
+                {% endfor %}
+
+                <strong class="tracked-group-title tracked-group-spaced">Motos enregistrées</strong>
+                {% for moto in motos_sans_positions %}
+                    <button class="tracked-moto-item is-muted" type="button" data-moto-id="{{ moto.pk }}" data-moto-immat="{{ moto.immatriculation }}">
+                        <span><i class="fa-solid fa-motorcycle"></i></span>
+                        <b>{{ moto.immatriculation }}</b>
+                        <small>Aucune position GPS reçue</small>
+                    </button>
+                {% empty %}
+                    <p class="empty compact-empty">Toutes les motos enregistrées ont déjà un suivi GPS.</p>
+                {% endfor %}
+            </div>
+            <div class="map-history-summary" id="mapHistorySummary">
+                <strong>0</strong>
+                <span>position affichée</span>
+            </div>
+            <div id="mapHistoryList" class="map-history-list">
+                <p class="empty">Choisissez une moto dans la liste pour afficher son historique GPS.</p>
+            </div>
+        </section>
+    </aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/gps-map.js' %}"></script>
+{% endblock %}

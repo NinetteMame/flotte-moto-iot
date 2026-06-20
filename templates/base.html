@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MotoTrack{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body{% if user.is_authenticated and user.is_responsable %} data-gps-alert-check-url="{% url 'alert-check-gps' %}"{% endif %}>
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-mark">M</span>
+            <span><strong>MotoTrack</strong><small>BAOL EXPRESS</small></span>
+        </a>
+        <nav class="nav-list">
+            {% if user.is_responsable %}
+                <a href="{% url 'dashboard' %}" class="nav-item"><span>▦</span> Tableau de bord</a>
+                <a href="{% url 'moto-list' %}" class="nav-item"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM5 14h4l3-6h3l2 3h2m-9 3 4 0-3-5H8"/></svg></span> Motos</a>
+                <a href="{% url 'livreur-list' %}" class="nav-item"><span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span> Livreurs</a>
+                <a href="{% url 'affectation-list' %}" class="nav-item"><span>⇄</span> Affectations</a>
+                <a href="{% url 'mission-list' %}" class="nav-item"><span>◆</span> Missions</a>
+                <a href="{% url 'alert-list' %}" class="nav-item nav-alert-item">
+                    <span class="nav-svg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>
+                    Alertes
+                    <strong class="nav-alert-count{% if not nav_alertes_non_lues %} is-hidden{% endif %}">{{ nav_alertes_non_lues }}</strong>
+                </a>
+                <a href="{% url 'gps-map' %}" class="nav-item"><span>⌖</span> Carte GPS</a>
+                <a href="{% url 'preuve-list' %}" class="nav-item"><span>✓</span> Preuves</a>
+                <a href="{% url 'responsable-profile' %}" class="nav-item"><span>⚙</span> Mon profil</a>
+            {% else %}
+                <a href="{% url 'livreur-dashboard' %}" class="nav-item"><span><i class="fa-solid fa-chart-line"></i></span> Tableau de bord</a>
+                <a href="{% url 'livreur-missions' %}" class="nav-item"><span><i class="fa-solid fa-box"></i></span> Mes missions</a>
+                <a href="{% url 'livreur-moto' %}" class="nav-item"><span><i class="fa-solid fa-motorcycle"></i></span> Ma moto</a>
+                <a href="{% url 'livreur-livraisons' %}" class="nav-item"><span><i class="fa-solid fa-clock-rotate-left"></i></span> Mes livraisons</a>
+                <a href="{% url 'alert-list' %}" class="nav-item nav-alert-item"><span><i class="fa-solid fa-bell"></i></span> Alertes<strong class="nav-alert-count{% if not nav_alertes_non_lues %} is-hidden{% endif %}">{{ nav_alertes_non_lues }}</strong></a>
+                <a href="{% url 'livreur-profile' %}" class="nav-item"><span><i class="fa-solid fa-user"></i></span> Mon profil</a>
+            {% endif %}
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-chip">
+                <span class="avatar">{{ user.username|first|upper }}</span>
+                <span><strong>{{ user.get_full_name|default:user.username }}</strong><small>{{ user.get_role_display }}</small></span>
+            </div>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">Se déconnecter</button>
+            </form>
+        </div>
+    </aside>
+    <main class="main-content">
+        <header class="topbar">
+            <button class="menu-button" id="menuButton" aria-label="Ouvrir le menu">☰</button>
+            <h1>{% block page_title %}MotoTrack{% endblock %}</h1>
+            {% if user.is_authenticated %}
+            <details class="alert-bell">
+                <summary aria-label="Afficher les alertes">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+                    <span class="alert-count{% if not nav_alertes_non_lues %} is-hidden{% endif %}">{{ nav_alertes_non_lues }}</span>
+                </summary>
+                <div class="alert-dropdown">
+                    <div class="alert-dropdown-head">
+                        <div><strong>Alertes</strong><small id="alertUnreadLabel">{{ nav_alertes_non_lues }} non lue{{ nav_alertes_non_lues|pluralize }}</small></div>
+                        <a href="{% url 'alert-list' %}">Tout voir</a>
+                    </div>
+                    <div class="alert-dropdown-list">
+                        {% for alerte in nav_alertes %}
+                            <a href="{% url 'alert-list' %}" class="alert-preview {% if not alerte.is_read %}unread{% endif %}">
+                                <span class="alert-type-icon type-{{ alerte.type|lower }}">!</span>
+                                <span><strong>{{ alerte.get_type_display }}</strong><small>{{ alerte.message|truncatechars:76 }}</small><time>{{ alerte.date|timesince }}</time></span>
+                            </a>
+                        {% empty %}
+                            <p class="empty">Aucune alerte enregistrée.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+        </header>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <section class="page-content">
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+</div>
+<script src="{% static 'js/app.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

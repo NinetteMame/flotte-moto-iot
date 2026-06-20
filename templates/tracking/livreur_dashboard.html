@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block page_title %}MOTOTRACK – Espace Livreur{% endblock %}
+{% block content %}
+<section class="driver-hero">
+  <div class="driver-hero-copy"><span class="pill pill-light">BAOL EXPRESS</span><h2>Bienvenue dans votre espace de livraison</h2><p>Suivez vos missions, vos trajets et vos livraisons en temps réel.</p>
+    <div class="driver-hero-actions"><a class="btn btn-light" href="{% url 'livreur-missions' %}"><i class="fa-solid fa-route"></i> Voir mes missions</a><a class="btn driver-btn-ghost" href="{% url 'livreur-livraisons' %}"><i class="fa-solid fa-clock-rotate-left"></i> Historique des livraisons</a></div>
+  </div>
+  <div class="driver-identity">{% if livreur.photo %}<img src="{{ livreur.photo.url }}" alt="{{ livreur }}">{% else %}<span class="driver-avatar">{{ livreur.prenom|first }}{{ livreur.nom|first }}</span>{% endif %}<div><small>Livreur connecté</small><strong>{{ livreur }}</strong><span>{{ livreur.telephone }}</span><span><i class="fa-solid fa-motorcycle"></i> {{ moto.immatriculation|default:"Aucune moto affectée" }}</span></div></div>
+</section>
+<section class="stats-grid driver-stats">
+  <article class="stat-card accent-orange"><span class="stat-icon"><i class="fa-regular fa-clock"></i></span><div><small>En attente</small><strong>{{ missions_en_attente }}</strong><p>Missions à démarrer</p></div></article>
+  <article class="stat-card accent-blue"><span class="stat-icon"><i class="fa-solid fa-route"></i></span><div><small>En cours</small><strong>{{ missions_en_cours }}</strong><p>Livraisons actives</p></div></article>
+  <article class="stat-card accent-green"><span class="stat-icon"><i class="fa-solid fa-circle-check"></i></span><div><small>Terminées</small><strong>{{ missions_terminees }}</strong><p>Livraisons validées</p></div></article>
+  <article class="stat-card accent-red"><span class="stat-icon"><i class="fa-solid fa-ban"></i></span><div><small>Annulées</small><strong>{{ missions_annulees }}</strong><p>Missions interrompues</p></div></article>
+  <article class="stat-card accent-purple"><span class="stat-icon"><i class="fa-solid fa-trophy"></i></span><div><small>Total effectué</small><strong>{{ total_livraisons }}</strong><p>Depuis votre inscription</p></div></article>
+  <article class="stat-card accent-cyan"><span class="stat-icon"><i class="fa-solid fa-satellite-dish"></i></span><div><small>Dernière position GPS</small><strong class="stat-position">{% if derniere_position %}{{ derniere_position.recue_le|timesince }}{% else %}—{% endif %}</strong><p>{% if derniere_position %}{{ derniere_position.latitude }}, {{ derniere_position.longitude }}{% else %}Aucun signal reçu{% endif %}</p></div></article>
+</section>
+<section class="panel"><div class="panel-header"><div><h3>Mes missions récentes</h3><p>Vos dernières opérations BAOL EXPRESS.</p></div><a href="{% url 'livreur-missions' %}">Tout voir</a></div>
+  <div class="mission-cards driver-recent">{% for mission in missions_recentes %}<article class="mission-card"><div class="mission-card-head"><span class="badge status-{{ mission.statut|lower }}">{{ mission.get_statut_display }}</span><strong>#{{ mission.pk }}</strong></div><h3>{{ mission.nom_client }}</h3><p class="mission-address">{{ mission.adresse_livraison }}</p><a class="btn btn-detail btn-block" href="{% url 'mission-detail' mission.pk %}"><i class="fa-solid fa-eye"></i> Voir la mission</a></article>{% empty %}<p class="empty">Aucune mission pour le moment.</p>{% endfor %}</div>
+</section>
+{% endblock %}

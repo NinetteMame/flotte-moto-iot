@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block page_title %}Gestion des motos{% endblock %}
+{% block content %}
+<div class="page-actions"><div><h2>Flotte de motos</h2><p>Gérez les véhicules connectés à MotoTrack.</p></div><a class="btn btn-primary" href="{% url 'moto-create' %}">+ Ajouter une moto</a></div>
+<div class="panel"><div class="table-wrap"><table>
+<thead><tr><th>Immatriculation</th><th>Marque / modèle</th><th>État</th><th>Actions</th></tr></thead>
+<tbody>{% for moto in motos %}<tr><td><strong>{{ moto.immatriculation }}</strong></td><td>{{ moto.marque }} {{ moto.modele }}</td><td><span class="badge status-{{ moto.etat|lower }}">{{ moto.get_etat_display }}</span></td><td class="actions"><a href="{% url 'moto-update' moto.pk %}">Modifier</a><a class="danger-link" href="{% url 'moto-delete' moto.pk %}">Supprimer</a></td></tr>{% empty %}<tr><td colspan="4" class="empty">Aucune moto enregistrée.</td></tr>{% endfor %}</tbody>
+</table></div></div>
+{% endblock %}

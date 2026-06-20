@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord | MotoTrack{% endblock %}
+{% block page_title %}MOTOTRACK Tableau de bord{% endblock %}
+{% block content %}
+<div class="hero-banner">
+    <div class="hero-copy">
+        <p class="hero-intro">
+            <span class="hero-intro-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
+            <span>Une vision claire de <strong>chaque mission</strong>, <strong>chaque livreur</strong> et <strong>chaque moto</strong>.</span>
+        </p>
+        <h2>BIENVENUE CHEZ<br><strong>BAOL EXPRESS</strong></h2>
+        <div class="hero-features">
+            <span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.6 2.9 8.3 7 10 4.1-1.7 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-5"/></svg>
+                Suivi sécurisé
+            </span>
+            <span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM5 14h4l3-6h3l2 3h2m-9 3 4 0-3-5H8"/></svg>
+                Flotte connectée
+            </span>
+        </div>
+        <div class="hero-line"></div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+        <span class="hero-orbit orbit-one"></span>
+        <span class="hero-orbit orbit-two"></span>
+        <span class="hero-pin pin-start"></span>
+        <span class="hero-route"></span>
+        <span class="hero-pin pin-end"></span>
+        <div class="hero-moto">
+            <svg viewBox="0 0 120 80">
+                <circle cx="25" cy="59" r="14"></circle>
+                <circle cx="94" cy="59" r="14"></circle>
+                <path d="M25 59h25l17-31h16l11 31M51 59h28L62 38H43l-9 21M72 28l-7-12M82 27h16"></path>
+            </svg>
+        </div>
+        <div class="hero-speed speed-one"></div>
+        <div class="hero-speed speed-two"></div>
+        <div class="hero-speed speed-three"></div>
+        <div class="hero-partner">
+            <span class="hero-partner-mark">B</span>
+            <span class="hero-partner-copy">
+                <strong>Baol Express</strong>
+                <span>Votre partenaire de livraison</span>
+            </span>
+        </div>
+    </div>
+</div>
+<div class="stats-grid">
+    <article class="stat-card accent-blue stat-card-moto"><span class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM5 14h4l3-6h3l2 3h2m-9 3 4 0-3-5H8"/></svg></span><div><small>Total motos</small><strong>{{ total_motos }}</strong><p>Flotte enregistrée</p></div></article>
+    <article class="stat-card accent-cyan stat-card-person"><span class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><div><small>Livreurs actifs</small><strong>{{ total_livreurs }}</strong><p>Comptes opérationnels</p></div></article>
+    <article class="stat-card accent-gray stat-card-person-inactive"><span class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8M5 5l14 14"/></svg></span><div><small>Livreurs inactifs</small><strong>{{ livreurs_inactifs }}</strong><p>Comptes suspendus</p></div></article>
+    <article class="stat-card accent-orange"><span class="stat-icon">◆</span><div><small>Missions en cours</small><strong>{{ missions_en_cours }}</strong><p>Livraisons actives</p></div></article>
+    <article class="stat-card accent-green"><span class="stat-icon">✓</span><div><small>Missions terminées</small><strong>{{ missions_terminees }}</strong><p>Livraisons validées</p></div></article>
+    <article class="stat-card accent-red"><span class="stat-icon">×</span><div><small>Missions annulées</small><strong>{{ missions_annulees }}</strong><p>Livraisons interrompues</p></div></article>
+    <article class="stat-card accent-purple"><span class="stat-icon">◷</span><div><small>Missions en attente</small><strong>{{ missions_en_attente }}</strong><p>Livraisons à démarrer</p></div></article>
+</div>
+<div class="content-grid">
+    <article class="panel">
+        <div class="panel-header"><div><h3>Missions récentes</h3><p>Dernières opérations enregistrées</p></div><a href="{% url 'mission-list' %}">Tout voir</a></div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Client</th><th>Livreur</th><th>Moto</th><th>Statut</th></tr></thead>
+                <tbody>
+                {% for mission in missions_recentes %}
+                    <tr><td><a href="{% url 'mission-detail' mission.pk %}">{{ mission.nom_client }}</a></td><td>{{ mission.livreur }}</td><td>{{ mission.moto.immatriculation }}</td><td><span class="badge status-{{ mission.statut|lower }}">{{ mission.get_statut_display }}</span></td></tr>
+                {% empty %}<tr><td colspan="4" class="empty">Aucune mission enregistrée.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+    <article class="panel">
+        <div class="panel-header"><div><h3>Dernières positions</h3><p>Signaux GPS les plus récents</p></div><a href="{% url 'gps-map' %}">Ouvrir la carte</a></div>
+        <div class="position-list">
+            {% for position in dernieres_positions %}
+                <div class="position-item"><span class="position-dot"></span><div><strong>{{ position.moto.immatriculation }}</strong><small>{{ position.latitude }}, {{ position.longitude }}</small></div><time>{{ position.recue_le|timesince }}</time></div>
+            {% empty %}<p class="empty">Aucune position GPS reçue.</p>{% endfor %}
+        </div>
+    </article>
+</div>
+{% endblock %}
