@@ -13,6 +13,7 @@
 */
 
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <TinyGPSPlus.h>
 
@@ -20,11 +21,12 @@ const char* WIFI_SSID = "NOM_DU_WIFI";
 const char* WIFI_PASSWORD = "MOT_DE_PASSE_WIFI";
 const char* FIRMWARE_VERSION = "MotoTrack GPS v2 - immatriculation";
 
-// Adresse IPv4 actuelle de l'ordinateur qui exécute Django.
-const char* API_URL = "http://172.16.101.181:8000/api/gps/positions/";
+// URL publique de production Render.
+const char* API_URL =
+    "https://mototrack-mzpi.onrender.com/api/gps/positions/";
 
-// Production Render : décommentez cette ligne et commentez l'URL locale.
-// const char* API_URL = "https://mototrack.onrender.com/api/gps/positions/";
+// Pour les tests locaux uniquement :
+// const char* API_URL = "http://192.168.x.x:8000/api/gps/positions/";
 
 // Utilisez exactement la même valeur que GPS_API_KEY dans Render ou .env.
 const char* GPS_API_KEY = "VOTRE_CLE_API_GPS";
@@ -71,10 +73,16 @@ void sendPosition(double latitude, double longitude) {
     return;
   }
 
+  WiFiClientSecure secureClient;
+  // Adapté au prototype académique. En production réelle, installez le
+  // certificat racine afin de valider complètement le serveur HTTPS.
+  secureClient.setInsecure();
+
   HTTPClient http;
-  http.setConnectTimeout(5000);
-  http.setTimeout(5000);
-  if (!http.begin(API_URL)) {
+  http.setConnectTimeout(20000);
+  http.setTimeout(60000);
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  if (!http.begin(secureClient, API_URL)) {
     Serial.println("ERREUR : URL API invalide.");
     return;
   }
@@ -104,21 +112,28 @@ void sendPosition(double latitude, double longitude) {
   if (gpsTime != "") json += ",\"heure_appareil\":\"" + gpsTime + "\"";
   json += "}";
 
-  int statusCode = http.POST(json);
-  Serial.print("Données envoyées : ");
-  Serial.println(json);
-  Serial.print("GPS : ");
+  Serial.print("Envoi GPS : ");
   Serial.print(latitude, 6);
   Serial.print(", ");
-  Serial.print(longitude, 6);
+  Serial.println(longitude, 6);
+
+  int statusCode = http.POST(json);
 
   if (statusCode == 200 || statusCode == 201) {
-    Serial.println(" | Envoyé avec succès.");
+    Serial.println("API : position enregistrée avec succès.");
   } else if (statusCode > 0) {
-    Serial.print(" | Erreur HTTP ");
+    Serial.print("API : erreur HTTP ");
     Serial.println(statusCode);
+    String response = http.getString();
+    if (response.length() > 180) {
+      response = response.substring(0, 180) + "...";
+    }
+    if (response.length() > 0) {
+      Serial.print("Réponse : ");
+      Serial.println(response);
+    }
   } else {
-    Serial.print(" | Connexion API impossible : ");
+    Serial.print("API : connexion impossible : ");
     Serial.println(http.errorToString(statusCode));
   }
 
