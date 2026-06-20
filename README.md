@@ -340,7 +340,9 @@ MAP_PROVIDER=esri
 `SECRET_KEY`, `GPS_API_KEY` et `RESPONSABLE_REGISTRATION_CODE` peuvent être
 générées par Render. Copiez la valeur de `GPS_API_KEY` dans le programme ESP32.
 N'ajoutez pas de slash final dans `ALLOWED_HOSTS`. L'origine CSRF doit commencer
-par `https://`.
+par `https://`. Sur Render, MotoTrack détecte automatiquement le domaine fourni
+par `RENDER_EXTERNAL_HOSTNAME`; les deux variables de domaine sont donc
+facultatives tant que vous n'utilisez pas un domaine personnalisé.
 
 ### Commandes Render
 
