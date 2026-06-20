@@ -54,6 +54,10 @@ window.initMotoTrackGPSMap = async function () {
     }).format(new Date(value));
   }
 
+  function googleMapsUrl(latitude, longitude) {
+    return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  }
+
   async function showHistory(position) {
     return loadMotoHistory(position.moto, position.moto_immatriculation);
   }
@@ -132,6 +136,8 @@ window.initMotoTrackGPSMap = async function () {
         lat: Number(item.latitude),
         lng: Number(item.longitude),
       };
+      const row = document.createElement("div");
+      row.className = "map-history-row";
       const button = document.createElement("button");
       button.className = "map-history-item";
       button.innerHTML = `
@@ -145,7 +151,15 @@ window.initMotoTrackGPSMap = async function () {
         map.panTo(coordinates);
         map.setZoom(17);
       });
-      list.appendChild(button);
+      const googleLink = document.createElement("a");
+      googleLink.className = "map-google-link map-google-link-compact";
+      googleLink.href = googleMapsUrl(coordinates.lat, coordinates.lng);
+      googleLink.target = "_blank";
+      googleLink.rel = "noopener";
+      googleLink.title = "Ouvrir cette position dans Google Maps";
+      googleLink.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+      row.append(button, googleLink);
+      list.appendChild(row);
     });
   }
 
@@ -200,9 +214,16 @@ window.initMotoTrackGPSMap = async function () {
           markerData.marker.setPosition(position.coordinates);
         }
         markerData.infoWindow.setContent(
-          `<div class="google-map-popup"><strong>${position.moto_immatriculation}</strong><span>${formatDate(position.recue_le)}</span><small>${position.coordinates.lat.toFixed(6)}, ${position.coordinates.lng.toFixed(6)}</small></div>`
+          `<div class="google-map-popup"><strong>${position.moto_immatriculation}</strong>` +
+          `<span>${formatDate(position.recue_le)}</span>` +
+          `<small>${position.coordinates.lat.toFixed(6)}, ${position.coordinates.lng.toFixed(6)}</small>` +
+          `<a class="map-popup-google-link" target="_blank" rel="noopener" ` +
+          `href="${googleMapsUrl(position.coordinates.lat, position.coordinates.lng)}">` +
+          `<i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir dans Google Maps</a></div>`
         );
 
+        const row = document.createElement("div");
+        row.className = "map-position-row";
         const item = document.createElement("button");
         item.className = "map-position-item";
         item.innerHTML = `<span class="map-moto-icon"><i class="fa-solid fa-motorcycle"></i></span><span><strong>${position.moto_immatriculation}</strong><small>${formatDate(position.recue_le)}</small></span>`;
@@ -212,7 +233,19 @@ window.initMotoTrackGPSMap = async function () {
           markerData.infoWindow.open({ anchor: markerData.marker, map });
           showHistory(position);
         });
-        list.appendChild(item);
+        const googleLink = document.createElement("a");
+        googleLink.className = "map-google-link";
+        googleLink.href = googleMapsUrl(
+          position.coordinates.lat,
+          position.coordinates.lng
+        );
+        googleLink.target = "_blank";
+        googleLink.rel = "noopener";
+        googleLink.title = `Ouvrir ${position.moto_immatriculation} dans Google Maps`;
+        googleLink.innerHTML =
+          '<i class="fa-solid fa-map-location-dot"></i><span>Google Maps</span>';
+        row.append(item, googleLink);
+        list.appendChild(row);
       });
 
       const count = visible.length;

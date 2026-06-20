@@ -266,6 +266,11 @@ tr:hover td { background: #fbfcfe; }
 .map-position-item { width: 100%; display: flex; align-items: center; gap: 13px; padding: 14px 5px; border: 0; border-bottom: 1px solid var(--line); background: white; text-align: left; cursor: pointer; }
 .map-position-item strong, .map-position-item small { display: block; }
 .map-position-item small { margin-top: 4px; color: var(--muted); font-size: .68rem; }
+.map-position-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); }
+.map-position-row .map-position-item { min-width: 0; border-bottom: 0; }
+.map-google-link { min-height: 36px; padding: 8px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid #b9dfc8; border-radius: 10px; color: #166b3c; background: linear-gradient(145deg, #f0fff5, #dff5e8); font-size: .64rem; font-weight: 800; white-space: nowrap; transition: .2s; }
+.map-google-link:hover { color: white; border-color: #218b50; background: linear-gradient(135deg, #218b50, #34a853); transform: translateY(-1px); }
+.map-popup-google-link { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; color: #18864b; font-size: .72rem; font-weight: 800; }
 .moto-marker span { display: grid; place-items: center; width: 42px; height: 42px; border: 4px solid white; border-radius: 50%; color: white; background: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,.3); }
 .moto-marker svg, .map-moto-icon svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .map-moto-icon { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 10px; color: var(--primary); background: #e8f2ff; }
@@ -851,6 +856,9 @@ tr:hover td { background: #fff9ef; }
 .map-history-summary strong { color: var(--primary); font-size: 1.55rem; }
 .map-history-summary span { color: var(--muted); font-size: .72rem; font-weight: 700; }
 .map-history-list { display: grid; gap: 8px; }
+.map-history-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px; }
+.map-history-row .map-history-item { min-width: 0; }
+.map-google-link-compact { width: 38px; min-height: 38px; padding: 8px; }
 .map-history-item { width: 100%; padding: 11px; display: flex; align-items: center; gap: 11px; border: 1px solid #eadfce; border-radius: 11px; color: var(--text); background: white; text-align: left; cursor: pointer; transition: .2s; }
 .map-history-item:hover { transform: translateX(3px); border-color: #e4bf83; background: #fff6e8; }
 .map-history-item strong, .map-history-item small { display: block; }
