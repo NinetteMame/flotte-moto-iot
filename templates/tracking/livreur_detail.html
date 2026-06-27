@@ -4,7 +4,7 @@
 <section class="livreur-detail-hero">
   <div class="livreur-detail-profile">
     {% if livreur.photo %}<img src="{{ livreur.photo.url }}" alt="Photo de {{ livreur }}">{% else %}<span class="livreur-detail-avatar">{{ livreur.prenom|first }}{{ livreur.nom|first }}</span>{% endif %}
-    <div><span class="profile-role"><i class="fa-solid fa-id-badge"></i> Profil livreur BAOL EXPRESS</span><h2>{{ livreur }}</h2><p>{{ livreur.telephone }} · {{ livreur.utilisateur.email|default:"E-mail non renseigné" }}</p></div>
+    <div><span class="profile-role"><i class="fa-solid fa-id-badge"></i> Profil livreur MotoTrack</span><h2>{{ livreur }}</h2><p>{{ livreur.telephone }} · {{ livreur.utilisateur.email|default:"E-mail non renseigné" }}</p></div>
   </div>
   <div class="livreur-detail-actions"><span class="badge {% if livreur.actif %}status-terminee{% else %}status-annulee{% endif %}">{% if livreur.actif %}Compte actif{% else %}Compte inactif{% endif %}</span><a class="btn btn-light" href="{% url 'livreur-update' livreur.pk %}"><i class="fa-solid fa-pen"></i> Modifier</a></div>
 </section>

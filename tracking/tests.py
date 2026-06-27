@@ -741,11 +741,19 @@ class LivreurSpaceTests(MotoTrackBaseTest):
         self.assertEqual(pdf_response["Content-Type"], "application/pdf")
 
     def test_alertes_mission_et_position_gps_filtrees(self):
+        alerte_assignation = Alert.objects.get(
+            mission=self.mission,
+            type=Alert.Type.MISSION_ASSIGNEE,
+        )
         self.assertTrue(
-            Alert.objects.filter(
-                mission=self.mission,
-                type=Alert.Type.MISSION_ASSIGNEE,
-            ).exists()
+            alertes_pour_utilisateur(self.user_livreur)
+            .filter(pk=alerte_assignation.pk)
+            .exists()
+        )
+        self.assertFalse(
+            alertes_pour_utilisateur(self.responsable)
+            .filter(pk=alerte_assignation.pk)
+            .exists()
         )
         PositionGPS.objects.create(
             moto=self.moto,

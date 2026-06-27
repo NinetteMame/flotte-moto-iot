@@ -16,7 +16,7 @@
         <div class="visual-grid"></div>
         <div class="login-brand"><span class="brand-mark">M</span> MotoTrack</div>
         <div class="visual-copy">
-            <span class="pill">BAOL EXPRESS</span>
+            <span class="pill">MOTOTRACK</span>
             <h1>Créez votre espace responsable.</h1>
             <p>Le code d'inscription interne protège l'accès aux fonctions de gestion de MotoTrack.</p>
         </div>
@@ -31,7 +31,7 @@
             {% csrf_token %}
             <p class="eyebrow">Nouveau responsable</p>
             <h2>Créer un compte</h2>
-            <p class="muted">Créez le premier compte responsable de BAOL EXPRESS.</p>
+            <p class="muted">Créez un compte responsable MotoTrack.</p>
             {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
             <div class="register-grid">
                 {% for field in form %}

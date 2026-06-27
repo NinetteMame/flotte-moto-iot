@@ -144,7 +144,7 @@ def alertes_pour_utilisateur(user):
         "moto", "mission"
     )
     if user.is_responsable:
-        return queryset
+        return queryset.exclude(type=Alert.Type.MISSION_ASSIGNEE)
     return queryset.filter(
         mission__livreur__utilisateur=user,
         type__in=[

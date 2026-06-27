@@ -167,7 +167,7 @@ REST_FRAMEWORK = {
 GPS_API_KEY = os.getenv("GPS_API_KEY", "mototrack-gps-cle-a-modifier")
 GPS_ALERT_DELAY_MINUTES = int(os.getenv("GPS_ALERT_DELAY_MINUTES", "10"))
 RESPONSABLE_REGISTRATION_CODE = os.getenv(
-    "RESPONSABLE_REGISTRATION_CODE", "baol-express-2026"
+    "RESPONSABLE_REGISTRATION_CODE", "mototrack-2026"
 )
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "").strip()
 MAP_PROVIDER = os.getenv("MAP_PROVIDER", "esri").strip().lower()

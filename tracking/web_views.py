@@ -607,7 +607,7 @@ def preuve_livraison_pdf(request, pk):
     pdf = canvas.Canvas(buffer, pagesize=A4)
     pdf.setTitle(f"Preuve livraison mission {preuve.mission_id}")
     pdf.setFont("Helvetica-Bold", 20)
-    pdf.drawString(70, 780, "BAOL EXPRESS")
+    pdf.drawString(70, 780, "MOTOTRACK")
     pdf.setFont("Helvetica-Bold", 14)
     pdf.drawString(70, 752, "MOTOTRACK - Preuve officielle de livraison")
     pdf.line(70, 735, 525, 735)
